@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { getLoadManager } from 'zustand-persist/lib/LoadManager';
+import { getLoadManager } from './LoadManager';
 
 export interface PersistGateProps {
   children?: React.ReactNode;
