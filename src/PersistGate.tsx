@@ -1,20 +1,25 @@
-import React, { useState } from 'react'
-import { getLoadManager } from './LoadManager'
+import React, { useEffect, useState } from 'react';
+
+import { getLoadManager } from 'zustand-persist/lib/LoadManager';
 
 export interface PersistGateProps {
-  children?: React.ReactNode
-  loading?: React.ReactNode
-  onBeforeLift?: () => void
+  children?: React.ReactNode;
+  loading?: React.ReactNode;
+  onBeforeLift?: () => void;
 }
 
-export function PersistGate(props: PersistGateProps) {
-  const { children, loading = false, onBeforeLift } = props
-  const [isReady, setIsReady] = useState(false)
+export function PersistGate(props: PersistGateProps): React.Element {
+  const { children, loading = false, onBeforeLift } = props;
+  const [isReady, setIsReady] = useState(false);
 
-  getLoadManager().onAllLoaded(async () => {
-    onBeforeLift && (await onBeforeLift())
-    setIsReady(true)
-  })
+  useEffect(() => {
+    getLoadManager().setLoaded('');
+  }, []);
 
-  return <React.Fragment>{isReady ? children : loading}</React.Fragment>
+  getLoadManager().onAllLoaded(() => {
+    onBeforeLift && onBeforeLift();
+    setIsReady(true);
+  });
+
+  return <React.Fragment>{isReady ? children : loading}</React.Fragment>;
 }
